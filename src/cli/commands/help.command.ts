@@ -1,7 +1,7 @@
 import { ICommand } from './command.interface';
 
 
-export class HeplCommand implements ICommand {
+export class HelpCommand implements ICommand {
   public getName(): string {
     return '--help';
   }
