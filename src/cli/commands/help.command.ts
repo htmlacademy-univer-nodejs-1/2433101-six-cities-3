@@ -15,7 +15,7 @@ export class HelpCommand implements ICommand {
         --version:                       # Номер версии
         --help:                          # Печатает данный текст
         --import <path>:                 # Импортирует данные 
-        -- generate <n> <path> <url>     # Генерирует данные
+        --generate <n> <path> <url>     # Генерирует данные
     `);
   }
 }
