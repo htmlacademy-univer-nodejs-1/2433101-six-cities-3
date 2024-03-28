@@ -1,5 +1,7 @@
-import { Logger as PinoInstance, pino } from 'pino';
+import { Logger as PinoInstance, pino, transport } from 'pino';
 import { Logger } from './logger.interface';
+import { getCurrentModuleDirectoryPath } from '../../helpers/index.js';
+import { resolve } from 'node:path';
 
 
 export class PinoLogger implements Logger {
@@ -10,12 +12,12 @@ export class PinoLogger implements Logger {
     const logFilePath = 'logs/rest.log';
     const destination = resolve(modulePath, '../../../', logFilePath);
 
-    const multiTransport = transport({
+    const multyTransport = transport({
       targets: [
         {
           target: 'pino/file',
           options: { destination },
-          level: 'debug'
+          level: 'debug',
         },
         {
           target: 'pino/file',
@@ -25,8 +27,7 @@ export class PinoLogger implements Logger {
       ],
     });
 
-    this.logger = pino({}, multiTransport);
-    this.logger.info('Logger created...');
+    this.logger = pino({}, multyTransport);
   }
 
   public debug(message: string, ...args: unknown[]): void {

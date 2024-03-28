@@ -6,7 +6,7 @@ import { TSVFileWriter } from '../../shared/libs/file-writer/tsv-file-writer.js'
 
 
 export class GenerateCommand implements Command {
-  private initialData: MockServerData;
+  private initialData!: MockServerData;
 
   private async load(url: string) {
     try {
