@@ -4,6 +4,7 @@ import { RestApplication } from './rest';
 import { Config, RestConfig, RestSchema } from './shared/libs/config';
 import { Logger, PinoLogger } from './shared/libs/logger/index.js';
 import { Component } from './shared/types/component.enum';
+import { DatabaseClient, MongoDatabaseClient } from './shared/libs/database-client/index.js';
 
 
 async function bootstrap() {
@@ -11,6 +12,7 @@ async function bootstrap() {
   container.bind<RestApplication>(Component.RestApplication).to(RestApplication).inSingletonScope();
   container.bind<Logger>(Component.Logger).to(PinoLogger).inSingletonScope();
   container.bind<Config<RestSchema>>(Component.Config).to(RestConfig).inSingletonScope();
+  container.bind<DatabaseClient>(Component.DatabaseClient).to(MongoDatabaseClient).inSingletonScope();
 
   const application = container.get<RestApplication>(Component.RestApplication);
   await application.init();
