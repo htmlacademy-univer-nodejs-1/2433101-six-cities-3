@@ -1,10 +1,9 @@
 import * as Mongoose from 'mongoose';
 import { inject, injectable } from 'inversify';
+import { setTimeout } from 'node:timers/promises';
 import { DatabaseClient } from './database-client.interface.js';
 import { Logger } from '../logger/index.js';
 import { Component } from '../../types/component.enum.js';
-import { setTimeout } from 'node:timers/promises';
-
 
 const RETRY_COUNT = 5;
 const RETRY_TIMEOUT = 1000;
@@ -29,7 +28,7 @@ export class MongoDatabaseClient implements DatabaseClient {
       throw new Error('MongoDB client already connected');
     }
 
-    this.logger.info('Trying to connect to MongoDB…');
+    this.logger.info('Trying to connect to MongoDB...');
 
     let attempt = 0;
     while (attempt < RETRY_COUNT) {
