@@ -1,21 +1,23 @@
-import { ConvenienceType } from '../../../types/convenience-type.enum.js';
+import { Facilities } from '../../../types/facilities.enum.js';
 import { HouseType } from '../../../types/house-type.enum.js';
+import { City, Coordinates } from '../../../types/index.js';
 
 
 export class CreateOfferDto {
-  title!: string;
-  description!: string;
-  postDate!: Date;
-  cityId!: string;
-  imagePreview!: string;
-  photosHousing!: string[];
-  isPremium!: boolean;
-  isFavorite!: boolean;
-  rating!: number;
-  type!: HouseType;
-  numberRooms!: number;
-  numberGuests!: number;
-  price!: number;
-  conveniences!: ConvenienceType[];
-  authorId!: string;
+  title: string;
+  description: string;
+  postDate: Date;
+  city: City;
+  previewPhoto: string;
+  photos: string[];
+  isPremium: boolean;
+  isFavorite: boolean;
+  rating: number;
+  type: HouseType;
+  roomCount: number;
+  guestsCount: number;
+  price: number;
+  facilities: Facilities[];
+  coordinates: Coordinates;
+  authorId: string;
 }

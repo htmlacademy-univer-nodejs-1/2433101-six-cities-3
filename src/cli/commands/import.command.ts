@@ -1,30 +1,27 @@
 import { Command } from './command.interface.js';
-import { TSVFileReader, createOffer } from '../../shared/libs/file-reader/index.js';
+import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
 import { getErrorMessage, getMongoURI } from '../../shared/helpers/index.js';
 import { UserService } from '../../shared/modules/user/user-service.interface.js';
-import { CityService } from '../../shared/modules/city/city-service.interface.js';
 import { OfferService } from '../../shared/modules/offer/offer-service.interface.js';
 import { DatabaseClient } from '../../shared/libs/database-client/database-client.interface.js';
 import { Logger } from '../../shared/libs/logger/logger.interface.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultOfferService } from '../../shared/modules/offer/default-offer.service.js';
-import { DefaultCityService } from '../../shared/modules/city/city.service.js';
 import { DefaultUserService } from '../../shared/modules/user/default-user.service.js';
 import { MongoDatabaseClient } from '../../shared/libs/database-client/mongo.database-client.js';
 import { OfferModel } from '../../shared/modules/offer/offer.entity.js';
-import { CityModel } from '../../shared/modules/city/city.entity.js';
 import { UserModel } from '../../shared/modules/user/user.entity.js';
 import { Offer } from '../../shared/types/index.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
+import { createOffer } from '../../shared/helpers/offer.js';
 
 
 export class ImportCommand implements Command {
   private userService: UserService;
-  private cityService: CityService;
   private offerService: OfferService;
   private databaseClient: DatabaseClient;
   private logger: Logger;
-  private salt!: string;
+  private salt: string;
 
   constructor() {
     this.onImportedLine = this.onImportedLine.bind(this);
@@ -32,7 +29,6 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.offerService = new DefaultOfferService(this.logger, OfferModel);
-    this.cityService = new DefaultCityService(this.logger, CityModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
@@ -49,29 +45,28 @@ export class ImportCommand implements Command {
   }
 
   private async saveOffer(offer: Offer) {
-    const author = await this.userService.findOrCreate({
+    const user = await this.userService.findOrCreate({
       ...offer.author,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
-    const city = await this.cityService.findByCityNameOrCreate(offer.city.name, offer.city);
-
     await this.offerService.create({
-      title: offer.title,
+      authorId: user.id,
+      title: offer.name,
       description: offer.description,
-      postDate: offer.postDate,
-      cityId: city.id,
-      imagePreview: offer.imagePreview,
-      photosHousing: offer.photosHousing,
+      postDate: offer.datePublished,
+      city: offer.city,
+      previewPhoto: offer.previewImagePath,
+      photos: offer.photosPaths,
       isPremium: offer.isPremium,
       isFavorite: offer.isFavorite,
       rating: offer.rating,
-      type: offer.type,
-      numberRooms: offer.numberRooms,
-      numberGuests: offer.numberGuests,
-      price: offer.price,
-      conveniences: offer.conveniences,
-      authorId: author.id,
+      roomCount: offer.numberRooms,
+      guestsCount: offer.numberGuests,
+      facilities: offer.facilities,
+      coordinates: offer.coordinates,
+      price: offer.rentPrice,
+      type: offer.houseType,
     });
 
   }
@@ -85,6 +80,7 @@ export class ImportCommand implements Command {
     this.salt = salt;
 
     await this.databaseClient.connect(uri);
+
     const fileReader = new TSVFileReader(filename.trim());
 
     fileReader.on('line', this.onImportedLine);
