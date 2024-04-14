@@ -3,6 +3,7 @@ import { ConvenienceType, HouseType } from '../../types/index.js';
 import { CityEntity } from '../city/index.js';
 import { UserEntity } from '../user/index.js';
 
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
 
