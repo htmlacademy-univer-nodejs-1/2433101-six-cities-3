@@ -87,4 +87,20 @@ export class DefaultOfferService implements OfferService {
       .populate(['userId'])
       .exec();
   }
+
+  public async calculateTotalRating(id: string, newRating: number, newCommentsCount: number): Promise<DocumentType<OfferEntity> | null> {
+    const offer = await this.offerModel.findById(id).exec();
+
+    if (!offer) {
+      return null;
+    }
+
+    const totalRating = (offer.rating * (newCommentsCount - 1) + newRating) / newCommentsCount;
+    return this.offerModel
+      .findByIdAndUpdate(id, {
+        rating: totalRating
+      })
+      .populate(['host'])
+      .exec();
+  }
 }

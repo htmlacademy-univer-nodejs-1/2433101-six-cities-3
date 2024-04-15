@@ -14,5 +14,6 @@ export interface OfferService {
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findNew(count: number): Promise<DocumentType<OfferEntity>[]>;
   findDiscussed(count: number): Promise<DocumentType<OfferEntity>[]>;
+  calculateTotalRating(id: string, newRating: number, newCommentsCount: number): Promise<DocumentType<OfferEntity> | null>;
   exists(documentId: string): Promise<boolean>;
 }
