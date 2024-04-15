@@ -23,7 +23,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({type: String, required: true})
   public datePublished: Date;
 
-  @prop({type: String, required: true})
+  @prop({type: String, enum: City, required: true})
   public city: City;
 
   @prop({type: String, required: true})
@@ -32,16 +32,16 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({type: Array, required: true})
   public photosPaths: string[];
 
-  @prop({type: Boolean, required: true})
+  @prop({type: Boolean, required: true, default: false})
   public isPremium: boolean;
 
-  @prop({type: Boolean, required: true})
+  @prop({type: Boolean, required: true, default: false})
   public isFavorite: boolean;
 
   @prop({type: Number, required: true, min: 1, max: 5})
   public rating: number;
 
-  @prop({type: String, required: true})
+  @prop({type: String, enum: HouseType, required: true})
   public houseType: HouseType;
 
   @prop({type: Number, required: true, min: 1, max: 8})

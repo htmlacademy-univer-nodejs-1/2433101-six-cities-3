@@ -29,15 +29,15 @@ export function createOffer(offerData: string): Offer {
     isPremium,
     isFavorite,
     rating,
-    housingType,
+    houseType,
     numberRooms,
     numberGuests,
     rentPrice,
     facilities,
     authorName,
     authorEmail,
-    authorImagePath,
-    authorType,
+    avatarPath,
+    type,
     numberComments,
     coordinates
   ] = offer;
@@ -52,7 +52,7 @@ export function createOffer(offerData: string): Offer {
     isPremium: isPremium === 'true',
     isFavorite: isFavorite === 'true',
     rating: parseFloat(rating),
-    houseType: housingType as HouseType,
+    houseType: houseType as HouseType,
     numberRooms: parseInt(numberRooms, 10),
     numberGuests: parseInt(numberGuests, 10),
     rentPrice: parseInt(rentPrice, 10),
@@ -60,8 +60,8 @@ export function createOffer(offerData: string): Offer {
     author: {
       name: authorName,
       email: authorEmail,
-      avatarImagePath: authorImagePath,
-      userType: authorType as UserType
+      avatarPath: avatarPath,
+      type: type as UserType
     } as unknown as User,
     numberComments: parseInt(numberComments, 10),
     coordinates

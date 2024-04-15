@@ -13,7 +13,7 @@ export interface UserEntity extends defaultClasses.Base {
 
 export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({ type: String, required: true, default: '' })
-  public firstname: string;
+  public name: string;
 
   @prop({ type: String, unique: true, required: true })
   public email: string;
@@ -30,7 +30,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor(userData: User) {
     super();
 
-    this.firstname = userData.firstname;
+    this.name = userData.name;
     this.email = userData.email;
     this.avatarPath = userData.avatarPath;
     this.type = userData.type;

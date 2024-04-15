@@ -4,20 +4,21 @@ import { City, Coordinates } from '../../../types/index.js';
 
 
 export class CreateOfferDto {
-  title: string;
+  name: string;
   description: string;
-  postDate: Date;
+  datePublished: Date;
   city: City;
-  previewPhoto: string;
-  photos: string[];
+  previewImagePath: string;
+  photosPaths: string[];
   isPremium: boolean;
   isFavorite: boolean;
   rating: number;
-  type: HouseType;
-  roomCount: number;
-  guestsCount: number;
-  price: number;
+  houseType: HouseType;
+  numberRooms: number;
+  numberGuests: number;
+  rentPrice: number;
   facilities: Facilities[];
+  userId: string;
+  numberComments: number;
   coordinates: Coordinates;
-  authorId: string;
 }

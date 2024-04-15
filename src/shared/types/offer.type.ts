@@ -21,5 +21,5 @@ export type Offer = {
   facilities: Facilities[],
   author: User,
   numberComments: number,
-  coordinates: Coordinates,
+  coordinates: Coordinates
 }
