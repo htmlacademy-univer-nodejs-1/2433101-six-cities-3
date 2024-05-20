@@ -12,7 +12,7 @@ export interface CommentEntity extends defaultClasses.Base {}
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class CommentEntity extends defaultClasses.TimeStamps {
-  @prop({ trim: true, required: true })
+  @prop({ trim: true, required: true, type: () => String,})
   public description: string;
 
   @prop({
@@ -21,8 +21,11 @@ export class CommentEntity extends defaultClasses.TimeStamps {
   })
   public offerId: Ref<OfferEntity>;
 
-  @prop({ required: true })
-  public rating!: number;
+  @prop({
+    required: true,
+    type: () => Date,
+  })
+  public postDate: Date;
 
   @prop({
     ref: UserEntity,
