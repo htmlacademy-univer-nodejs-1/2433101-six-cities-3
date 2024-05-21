@@ -10,6 +10,8 @@ import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
+import { ParamOfferId } from './type/param-offerid.type.js';
+import { UpdateOfferDto } from './dto/update-offer.dto.js';
 
 
 @injectable()
@@ -24,41 +26,6 @@ export class OfferController extends BaseController {
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({
-      path: 'offers/:id',
-      method: HttpMethod.Get,
-      handler: this.getById,
-    });
-    this.addRoute({
-      path: 'offers/:id',
-      method: HttpMethod.Patch,
-      handler: this.updateById,
-    });
-    this.addRoute({
-      path: 'offers/:id',
-      method: HttpMethod.Delete,
-      handler: this.deleteById,
-    });
-    this.addRoute({
-      path: '/premium',
-      method: HttpMethod.Get,
-      handler: this.getPremiumByCity,
-    });
-    this.addRoute({
-      path: '/favorites',
-      method: HttpMethod.Get,
-      handler: this.getFavorites,
-    });
-    this.addRoute({
-      path: '/favorites/:id',
-      method: HttpMethod.Post,
-      handler: this.addFavorite,
-    });
-    this.addRoute({
-      path: '/favorites/:id',
-      method: HttpMethod.Delete,
-      handler: this.removeFavorite,
-    });
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
@@ -75,33 +42,28 @@ export class OfferController extends BaseController {
     this.created(res, fillDTO(OfferRdo, result));
   }
 
-  public async getById(req: Request, res: Response): Promise<void> {
-    const id = req.params.id;
-    const offer = await this.offerService.getById(id);
-
+  public async findById({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const { offerId } = params;
+    const offer = await this.offerService.findById(offerId);
     const responseData = fillDTO(OfferRdo, offer);
     this.ok(res, responseData);
   }
 
-  public async updateById(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'OfferController'
-    );
+  public async updateById({ body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
+    const updatedOffer = await this.offerService.updateById(params.offerId, body);
+    this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
   public async deleteById(req: Request, res: Response): Promise<void> {
     const id = req.params.id;
-
     await this.offerService.deleteById(id);
     this.noContent(res);
   }
 
-  public async getPremiumByCity(req: Request, res: Response): Promise<void> {
+  public async findByCityAndPremium(req: Request, res: Response): Promise<void> {
     const city = req.query.city;
     if (city) {
-      const offers = await this.offerService.getPremiumByCity(city as string);
+      const offers = await this.offerService.findByCityAndPremium(city as string, true);
       const responseData = fillDTO(OfferRdo, offers);
       this.ok(res, responseData);
     } else {
@@ -113,25 +75,28 @@ export class OfferController extends BaseController {
     }
   }
 
-  public async getFavorites(_req: Request, res: Response): Promise<void> {
-    const offers = await this.offerService.getFavorites();
+  public async findByFavorite(_req: Request, res: Response): Promise<void> {
+    const offers = await this.offerService.findByFavorite(true);
     const responseData = fillDTO(OfferRdo, offers);
     this.ok(res, responseData);
   }
 
-  public async addFavorite(req: Request, res: Response): Promise<void> {
-    const id = req.params['id'];
-
-    const result = await this.offerService.addFavorite(id);
+  public async addToFavorite({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const { offerId } = params;
+    const result = await this.offerService.addToFavorite(offerId);
     const responseData = fillDTO(OfferRdo, result);
     this.ok(res, responseData);
   }
 
-  public async removeFavorite(req: Request, res: Response): Promise<void> {
-    const id = req.params['id'];
-
-    const result = await this.offerService.removeFavorite(id);
+  public async removeFavoriteOffer({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const { offerId } = params;
+    const result = await this.offerService.removeFromFavorite(offerId);
     const responseData = fillDTO(OfferRdo, result);
     this.ok(res, responseData);
   }
+
+  // public async findByOfferId({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  //   const comments = await this.commentService.findByOfferId(params.offerId);
+  //   this.ok(res, fillDTO(CommentRdo, comments));
+  // }
 }
