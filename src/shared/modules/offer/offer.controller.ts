@@ -12,6 +12,8 @@ import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { ParamOfferId } from './type/param-offerid.type.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { CommentService } from '../comment/comment-service.interface.js';
+import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 
 
 @injectable()
@@ -19,6 +21,7 @@ export class OfferController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService) private readonly offerService: OfferService,
+    @inject(Component.CommentService) private readonly commentService: CommentService,
   ) {
     super(logger);
 
@@ -26,6 +29,46 @@ export class OfferController extends BaseController {
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/premium',
+      method: HttpMethod.Get,
+      handler: this.findByCityAndPremium
+    });
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Get,
+      handler: this.findByFavorite
+    });
+    this.addRoute({
+      path: '/favorites/:offerId',
+      method: HttpMethod.Post,
+      handler: this.addToFavorite,
+    });
+    this.addRoute({
+      path: '/favorites/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.removeFromFavorite,
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.findById,
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.deleteById,
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Patch,
+      handler: this.updateById,
+    });
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+    });
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
@@ -88,15 +131,15 @@ export class OfferController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async removeFavoriteOffer({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async removeFromFavorite({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
     const { offerId } = params;
     const result = await this.offerService.removeFromFavorite(offerId);
     const responseData = fillDTO(OfferRdo, result);
     this.ok(res, responseData);
   }
 
-  // public async findByOfferId({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
-  //   const comments = await this.commentService.findByOfferId(params.offerId);
-  //   this.ok(res, fillDTO(CommentRdo, comments));
-  // }
+  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const comments = await this.commentService.findByOfferId(params.offerId);
+    this.ok(res, fillDTO(CommentRdo, comments));
+  }
 }
