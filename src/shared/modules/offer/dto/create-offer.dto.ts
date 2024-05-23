@@ -52,7 +52,6 @@ export class CreateOfferDto {
   @IsEnum(Facilities, {message: CreateOfferValidationMessage.facilities.invalidElementFormat})
   public facilities: Facilities[];
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   public userId: string;
 
   public numberComments: number;
