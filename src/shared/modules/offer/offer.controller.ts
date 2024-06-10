@@ -58,7 +58,7 @@ export class OfferController extends BaseController {
       handler: this.findByFavorite
     });
     this.addRoute({
-      path: '/favorites/:offerId',
+      path: '/:offerId/favorites',
       method: HttpMethod.Post,
       handler: this.addToFavorite,
       middlewares: [
@@ -68,7 +68,7 @@ export class OfferController extends BaseController {
       ]
     });
     this.addRoute({
-      path: '/favorites/:offerId',
+      path: '/:offerId/favorites',
       method: HttpMethod.Delete,
       handler: this.removeFromFavorite,
       middlewares: [

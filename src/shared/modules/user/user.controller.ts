@@ -21,6 +21,7 @@ import { UploadFileMiddleware } from '../../libs/rest/middleware/upload-file.mid
 import { AuthService } from '../auth/auth-service.interface.js';
 import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
 import { UploadUserAvatarRdo } from './rdo/upload-user-avatar.rdo.js';
+import { LogoutUserRequest } from './logout-user-request.type.js';
 
 
 @injectable()
@@ -60,6 +61,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Get,
       handler: this.checkAuthenticate,
     });
+    this.addRoute({ path: '/logout', method: HttpMethod.Delete, handler: this.logout });
   }
 
   public async create(
@@ -86,8 +88,15 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDTO(LoggedUserRdo, user);
-    this.ok(res, Object.assign(responseData, { token }));
+    const responseData = fillDTO(LoggedUserRdo, {
+      name: user.name,
+      email: user.email,
+      avatarPath: user.avatarPath,
+      type: user.type,
+      token,
+      id: user.id,
+    });
+    this.ok(res, responseData);
   }
 
   public async uploadAvatar({ params, file }: Request, res: Response) {
@@ -109,5 +118,24 @@ export class UserController extends BaseController {
     }
 
     this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+  }
+
+  public async logout(
+    { body }: LogoutUserRequest,
+    _res: Response,
+  ): Promise<void> {
+    if (!body.token) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Not found token',
+        'UserController',
+      );
+    }
+
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Not implemented',
+      'UserController',
+    );
   }
 }

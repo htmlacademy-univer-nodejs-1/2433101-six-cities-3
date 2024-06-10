@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsEnum, IsMongoId, IsObject, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsObject, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { Facilities } from '../../../types/facilities.enum.js';
 import { HouseType } from '../../../types/house-type.enum.js';
 import { City, Coordinates } from '../../../types/index.js';
